@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react'
+import sunnyBg from '../assets/sunny-bg.jpg'
+import rainyBg from '../assets/rainy-bg.jpg'
 import sunny from '../assets/sunny-icon.svg'
 import cloudy from '../assets/cloudy-icon.svg'
 import rainy from '../assets/rainy-icon.svg'
@@ -7,12 +9,21 @@ import locationIcon from '../assets/location.svg'
 
 function Weather({rainChance, condition, location}) {
     let weatherIcon = sunny;
-    if(condition === 'Rain') weatherIcon = rainy;
-    else if(condition === 'Clouds') weatherIcon = cloudy;
-    else if(condition === 'Thunderstorm') weatherIcon = storm;
+    let backgroundImage = sunnyBg;
+
+    if (condition === 'Rain') {
+        weatherIcon = rainy;
+        backgroundImage = rainyBg;
+    } else if (condition === 'Clouds') {
+        weatherIcon = cloudy;
+    } else if (condition === 'Thunderstorm') {
+        weatherIcon = storm;
+    }
+
+    console.log(condition);
 
     return (
-        <div className="bg-[url('./assets/sunny-bg.jpg')] bg-cover bg-center pb-7 h-auto relative text-white">
+        <div style={{ backgroundImage: `url(${backgroundImage})` }} className="bg-cover bg-center pb-7 h-auto relative text-white">
             <div className='absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-gray-800 to-transparent z-0'></div>
             <div className='absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-gray-800  to-transparent z-0'></div>
             
