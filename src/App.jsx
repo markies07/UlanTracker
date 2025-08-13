@@ -11,33 +11,40 @@ function App() {
 
   const API_KEY = "9e20a4ce1c78fc3df2ac58f4fc67ca27"; // Replace with your key
 
+  function getWeatherCategory(description) {
+    const desc = description.toLowerCase();
+    if (desc.includes("clear")) return "clear";
+    if (desc.includes("cloud") || desc.includes("overcast")) return "cloudy";
+    if (desc.includes("rain") || desc.includes("drizzle") || desc.includes("shower")) return "raining";
+    if (desc.includes("thunderstorm")) return "thunderstorm";
+    return "unknown";
+  }
+
   useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(async (position) => {
         const { latitude, longitude } = position.coords;
 
         try {
-          // Get weather data
           const weatherRes = await fetch(
             `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`
           );
           const weatherData = await weatherRes.json();
 
-          // Extract main weather details
+          const category = getWeatherCategory(weatherData.weather[0].description);
+
           setLocationName(weatherData.name);
           setTemperature(weatherData.main.temp);
-          setCondition(weatherData.weather[0].description);
+          setCondition(category);
 
-          // Optional: use forecast API to get rain chance
           const forecastRes = await fetch(
             `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${API_KEY}&units=metric`
           );
           const forecastData = await forecastRes.json();
 
-          // Check if forecast data has rain info
           if (forecastData.list && forecastData.list.length > 0) {
-            const firstRainData = forecastData.list[0].pop; // probability of precipitation (0–1)
-            setRainChance(firstRainData * 100); // convert to %
+            const firstRainData = forecastData.list[0].pop; // 0–1 probability
+            setRainChance(Math.round(firstRainData * 100)); // %
           } else {
             setRainChance(0);
           }
@@ -52,21 +59,16 @@ function App() {
     }
   }, []);
 
-  console.log(temperature)
-
-  // if (loading) {
-  //   return <p>Loading weather...</p>;
-  // }
-
   return (
     <div className="font-poppins">
-      <p>{temperature}</p>
-      <Weather
-        rainChance={rainChance}
-        condition={condition}
-        location={locationName}
-        temperature={temperature}
-      />
+      {!loading && (
+        <Weather
+          rainChance={rainChance}
+          condition={condition}
+          location={locationName}
+          temperature={temperature}
+        />
+      )}
       <Details />
     </div>
   );
