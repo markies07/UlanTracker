@@ -5,31 +5,34 @@ import nightBg from '../assets/night-bg.jpg';
 import rainynightBg from '../assets/rainynight-bg.jpg';
 import sunny from '../assets/sunny-icon.svg';
 import night from '../assets/night-icon.svg';
-import cloudy from '../assets/cloudy-icon.svg';
+import cloudyDay from '../assets/cloudy-day.svg';
+import cloudyNight from '../assets/cloudy-night.svg';
 import rainy from '../assets/rainy-icon.svg';
 import storm from '../assets/storm-icon.svg';
 import locationIcon from '../assets/location.svg';
 
 function Weather({ rainChance, condition, location }) {
   const hour = new Date().getHours();
+  const isDay = hour >= 6 && hour < 18;
+
   let weatherIcon = sunny;
   let backgroundImage = sunnyBg;
 
   if (condition === "clear") {
-    weatherIcon = hour >= 6 && hour < 18 ? sunny : night;
-    backgroundImage = hour >= 6 && hour < 18 ? sunnyBg : nightBg;
+    weatherIcon = isDay ? sunny : night;
+    backgroundImage = isDay ? sunnyBg : nightBg;
   } 
   else if (condition === "cloudy") {
-    weatherIcon = cloudy;
-    backgroundImage = hour >= 6 && hour < 18 ? sunnyBg : nightBg;
+    weatherIcon = isDay ? cloudyDay : cloudyNight;
+    backgroundImage = isDay ? sunnyBg : nightBg;
   } 
   else if (condition === "raining") {
     weatherIcon = rainy;
-    backgroundImage = hour >= 6 && hour < 18 ? rainyBg : rainynightBg;
+    backgroundImage = isDay ? rainyBg : rainynightBg;
   } 
   else if (condition === "thunderstorm") {
     weatherIcon = storm;
-    backgroundImage = hour >= 6 && hour < 18 ? rainyBg : rainynightBg;
+    backgroundImage = isDay ? rainyBg : rainynightBg;
   }
 
   return (
