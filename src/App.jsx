@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Weather from './components/Weather';
 import Details from './components/Details';
-import { BounceLoader } from 'react-spinners';
+import bg from './assets/bg.jpg';
 
 function App() {
   const [locationName, setLocationName] = useState("");
@@ -53,30 +53,35 @@ function App() {
           setLoading(false);
         } catch (error) {
           console.error("Error fetching weather:", error);
+          setLoading(false); // Set loading to false even on error
         }
+      }, (error) => {
+        console.error("Geolocation error:", error);
+        setLoading(false); // Set loading to false on geolocation error
       });
     } else {
       alert("Geolocation is not supported by your browser.");
+      setLoading(false);
     }
   }, []);
 
   return (
-    <div className="font-poppins h-screen md:flex justify-center items-center items-start-on-short overflow-auto">
-      {loading ?
-        <div className="fixed inset-0 flex items-center justify-center bg-secondary z-50">
-          <BounceLoader color="#2d2d2d" />
-        </div> 
-        :
-        <div className='md:flex justify-center items-center h-auto md:shadow-[0_0_10px_rgba(0,0,0,0.3)] md:rounded-lg overflow-hidden'>
-          <Weather
-            rainChance={rainChance}
-            condition={condition}
-            location={locationName}
-            temperature={temperature}
-          />
-          <Details />
-        </div>
-      }
+    <div style={{ backgroundImage: `url(${bg})` }} className="font-poppins bg-cover bg-center h-screen md:flex justify-center items-center items-start-on-short overflow-auto">
+      <div className='md:flex justify-center items-center h-auto md:shadow-[0_0_10px_rgba(0,0,0,0.3)] md:rounded-lg overflow-hidden'>
+        <Weather
+          rainChance={rainChance}
+          condition={condition}
+          location={locationName}
+          temperature={temperature}
+          loading={loading}
+        />
+        <Details 
+          condition={condition}
+          temperature={temperature}
+          rainChance={rainChance}
+          loading={loading}
+        />
+      </div>
     </div>
   );
 }

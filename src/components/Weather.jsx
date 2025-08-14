@@ -48,7 +48,7 @@ function Weather({ rainChance, condition, location }) {
         <h1 className="text-sm font-medium lg:text-base">Mag lalaba ka Love?</h1>
 
         {/* WEATHER ICON */}
-        <div className="absolute bg-white w-16 h-14 top-0 flex justify-center items-center right-0 rounded-bl-2xl">
+        <div className="absolute bg-white w-16 h-14 top-0 md:top-3 md:right-3 flex justify-center items-center right-0 rounded-bl-2xl md:rounded-lg">
           <img className="w-10" src={weatherIcon} alt="" />
         </div>
       </div>
