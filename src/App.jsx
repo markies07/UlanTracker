@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Weather from './components/Weather';
 import Details from './components/Details';
+import { BounceLoader } from 'react-spinners';
 
 function App() {
   const [locationName, setLocationName] = useState("");
@@ -9,7 +10,7 @@ function App() {
   const [rainChance, setRainChance] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const API_KEY = "9e20a4ce1c78fc3df2ac58f4fc67ca27"; // Replace with your key
+  const API_KEY = "9e20a4ce1c78fc3df2ac58f4fc67ca27"; 
 
   function getWeatherCategory(description) {
     const desc = description.toLowerCase();
@@ -60,16 +61,22 @@ function App() {
   }, []);
 
   return (
-    <div className="font-poppins">
-      {!loading && (
-        <Weather
-          rainChance={rainChance}
-          condition={condition}
-          location={locationName}
-          temperature={temperature}
-        />
-      )}
-      <Details />
+    <div className="font-poppins h-screen md:flex justify-center items-center items-start-on-short overflow-auto">
+      {loading ?
+        <div className="fixed inset-0 flex items-center justify-center bg-secondary z-50">
+          <BounceLoader color="#2d2d2d" />
+        </div> 
+        :
+        <div className='md:flex justify-center items-center h-auto md:shadow-[0_0_10px_rgba(0,0,0,0.3)] md:rounded-lg overflow-hidden'>
+          <Weather
+            rainChance={rainChance}
+            condition={condition}
+            location={locationName}
+            temperature={temperature}
+          />
+          <Details />
+        </div>
+      }
     </div>
   );
 }

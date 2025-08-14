@@ -4,3 +4,9 @@
 @theme{
     --font-poppins: 'Poppins', sans-serif;
 }
+
+@media (max-height: 650px) {
+  .items-start-on-short {
+    align-items: flex-start;
+  }
+}

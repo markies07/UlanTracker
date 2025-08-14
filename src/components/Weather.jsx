@@ -1,8 +1,8 @@
 import React from 'react';
-import sunnyBg from '../assets/sunny-bg.jpg';
-import rainyBg from '../assets/rainy-bg.jpg';
-import nightBg from '../assets/night-bg.jpg';
-import rainynightBg from '../assets/rainynight-bg.jpg';
+import sunnyBg from '../assets/sunny-bg.webp';
+import rainyBg from '../assets/rainy-bg.webp';
+import nightBg from '../assets/night-bg.webp';
+import rainynightBg from '../assets/rainynight-bg.webp';
 import sunny from '../assets/sunny-icon.svg';
 import night from '../assets/night-icon.svg';
 import cloudyDay from '../assets/cloudy-day.svg';
@@ -38,14 +38,14 @@ function Weather({ rainChance, condition, location }) {
   return (
     <div
       style={{ backgroundImage: `url(${backgroundImage})` }}
-      className="bg-cover bg-center pb-7 h-auto relative text-white"
+      className="bg-cover bg-center pb-7 h-auto self-stretch md:flex md:flex-col md:justify-between relative md:p-0 md:w-72 lg:w-96 text-white"
     >
       <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-gray-900 to-transparent z-0"></div>
       <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-gray-900 to-transparent z-0"></div>
 
       {/* TITLE */}
       <div className="p-5 relative z-10">
-        <h1 className="text-sm font-medium">Mag lalaba ka Love?</h1>
+        <h1 className="text-sm font-medium lg:text-base">Mag lalaba ka Love?</h1>
 
         {/* WEATHER ICON */}
         <div className="absolute bg-white w-16 h-14 top-0 flex justify-center items-center right-0 rounded-bl-2xl">
@@ -55,7 +55,7 @@ function Weather({ rainChance, condition, location }) {
 
       {/* RAIN PERCENTAGE */}
       <div className="relative">
-        <div className="flex justify-center flex-col items-center pb-7">
+        <div className="flex justify-center flex-col items-center md:items-start px-5 pb-7">
           <h1 className="font-black text-7xl">
             {rainChance}
             <span className="font-normal">%</span>
@@ -64,7 +64,7 @@ function Weather({ rainChance, condition, location }) {
         </div>
 
         {/* LOCATION */}
-        <div className="flex justify-center items-center gap-2 pb-3">
+        <div className="flex justify-center items-center md:justify-start px-5 gap-2 pb-3">
           <img className="w-[10px]" src={locationIcon} alt="" />
           <p className="text-xs">{location}</p>
         </div>
