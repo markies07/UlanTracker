@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Weather from './components/Weather';
 import Details from './components/Details';
-import bg from './assets/bg.jpg';
+import { HashLoader } from 'react-spinners';
 
 function App() {
   const [locationName, setLocationName] = useState("");
@@ -66,22 +66,28 @@ function App() {
   }, []);
 
   return (
-    <div style={{ backgroundImage: `url(${bg})` }} className="font-poppins bg-cover bg-center h-screen md:flex justify-center items-center items-start-on-short overflow-auto">
-      <div className='md:flex justify-center items-center h-auto md:shadow-[0_0_10px_rgba(0,0,0,0.3)] md:rounded-lg overflow-hidden'>
-        <Weather
-          rainChance={rainChance}
-          condition={condition}
-          location={locationName}
-          temperature={temperature}
-          loading={loading}
-        />
-        <Details 
-          condition={condition}
-          temperature={temperature}
-          rainChance={rainChance}
-          loading={loading}
-        />
-      </div>
+    <div className="md:bg-[url('./assets/bg.jpg')] font-poppins bg-cover bg-center h-screen md:flex justify-center items-center items-start-on-short overflow-auto">
+      {loading ? 
+        <div className="fixed inset-0 flex items-center justify-center bg-secondary z-50">
+          <HashLoader />
+        </div>
+        :
+        <div className='flex flex-col md:flex-row justify-center items-center h-auto md:shadow-[0_0_10px_rgba(0,0,0,0.3)] md:rounded-lg overflow-hidden'>
+          <Weather
+            rainChance={rainChance}
+            condition={condition}
+            location={locationName}
+            temperature={temperature}
+            loading={loading}
+          />
+          <Details 
+            condition={condition}
+            temperature={temperature}
+            rainChance={rainChance}
+            loading={loading}
+          />
+        </div>
+      }
     </div>
   );
 }
