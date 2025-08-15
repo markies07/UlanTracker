@@ -1,32 +1,43 @@
 import React from 'react'
 
-function TimeGraph({ rainChance, loading }) {
-    // Generate sample hourly data (you can replace this with real forecast data)
-    const generateHourlyData = () => {
+function TimeGraph({ rainChance, hourlyForecast, loading }) {
+    // Use real hourly forecast data if available, otherwise generate fallback
+    const getHourlyData = () => {
+        if (hourlyForecast && hourlyForecast.length > 0) {
+            // Convert format to include AM/PM
+            return hourlyForecast.map(item => ({
+                ...item,
+                hour: item.hour.replace('A', 'AM').replace('P', 'PM')
+            }));
+        }
+        
+        // Fallback generation with more accurate logic
         const currentHour = new Date().getHours();
         const hours = [];
         
         for (let i = 0; i < 8; i++) {
             const hour = (currentHour + i) % 24;
-            const displayHour = hour === 0 ? '12 AM' : 
-                               hour < 12 ? `${hour} AM` : 
-                               hour === 12 ? '12 PM' : `${hour - 12} PM`;
+            const shortHour = hour === 0 ? '12A' : 
+                             hour < 12 ? `${hour}A` : 
+                             hour === 12 ? '12P' : `${hour - 12}P`;
             
-            // Generate some sample rain probabilities (you can replace with real API data)
             let probability;
             if (loading) {
                 probability = 0;
             } else {
-                // Create a pattern around the current rainChance
-                const variation = Math.random() * 20 - 10; // ±10% variation
-                probability = Math.max(0, Math.min(100, (rainChance || 0) + variation));
+                // First hour should match current rain chance exactly
+                if (i === 0) {
+                    probability = rainChance || 0;
+                } else {
+                    // Subsequent hours have realistic variations
+                    const baseChance = rainChance || 0;
+                    const variation = (Math.random() * 20 - 10); // ±10% variation
+                    probability = Math.max(0, Math.min(100, baseChance + variation));
+                }
             }
             
             hours.push({
-                hour: displayHour,
-                shortHour: hour === 0 ? '12AM' : 
-                          hour < 12 ? `${hour}AM` : 
-                          hour === 12 ? '12PM' : `${hour - 12}PM`,
+                hour: shortHour,
                 probability: Math.round(probability)
             });
         }
@@ -34,7 +45,7 @@ function TimeGraph({ rainChance, loading }) {
         return hours;
     };
 
-    const hourlyData = generateHourlyData();
+    const hourlyData = getHourlyData();
     const maxHeight = 60; // Maximum bar height in pixels
 
     return (
@@ -52,7 +63,7 @@ function TimeGraph({ rainChance, loading }) {
                         <div key={index} className="flex flex-col items-center gap-1 flex-1">
                             {/* Rain probability bar */}
                             <div 
-                                className="bg-[#7FC2D4] w-4 rounded-t transition-all duration-500 ease-out"
+                                className="bg-[#7FC2D4] w-4 rounded-t transition-all duration-300 ease-out"
                                 style={{ 
                                     height: `${(data.probability / 100) * maxHeight}px`,
                                     minHeight: data.probability > 0 ? '2px' : '0px'
@@ -65,7 +76,7 @@ function TimeGraph({ rainChance, loading }) {
                             <div className='bg-neutral-400 h-[1px] w-full'></div>
                             {/* Time label */}
                             <span className="text-xs font-medium">
-                                {data.shortHour}
+                                {data.hour}
                             </span>
                         </div>
                     ))}

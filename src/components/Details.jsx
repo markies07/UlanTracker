@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import sunny1 from '../assets/sunny1.svg'
 import sunny2 from '../assets/sunny2.svg'
 import rainy1 from '../assets/rainy1.svg'
@@ -10,7 +10,7 @@ import TimeFrame from './TimeFrame'
 import Description from './Description'
 import Footer from './Footer'
 
-function Details({ condition, temperature, rainChance }) {
+function Details({ condition, temperature, rainChance, hourlyForecast, loading }) {
     const hour = new Date().getHours();
     const isDay = hour >= 6 && hour < 18;
     const [imageIndex, setImageIndex] = useState(0);
@@ -26,13 +26,13 @@ function Details({ condition, temperature, rainChance }) {
                 setImageIndex(prev => prev === 0 ? 1 : 0);
                 setIsTransitioning(false);
             }, 500); // Half of transition duration
-        }, 10000); // 30 seconds
+        }, 10000); 
 
         return () => clearInterval(interval);
     }, []);
 
-    // Function to get the appropriate illustration
-    const getIllustration = () => {
+    // Memoize illustration selection for better performance
+    const illustration = useMemo(() => {
         // Night time (regardless of weather condition)
         if (!isDay) {
             return imageIndex === 0 ? night1 : night2;
@@ -45,7 +45,7 @@ function Details({ condition, temperature, rainChance }) {
             // Sunny/Clear or Cloudy (using sunny images for both)
             return imageIndex === 0 ? sunny1 : sunny2;
         }
-    };
+    }, [isDay, condition, imageIndex]);
 
     return (
         <div className='bg-white px-5 text-neutral-600 rounded-t-4xl md:rounded-none -mt-8 md:mt-0 md:w-96 flex justify-start items-center h-full grow flex-col relative'>
@@ -55,20 +55,33 @@ function Details({ condition, temperature, rainChance }) {
                     className={`w-full h-full transition-opacity duration-1000 ease-in-out ${
                         isTransitioning ? 'opacity-0' : 'opacity-100'
                     }`} 
-                    src={getIllustration()} 
+                    src={illustration} 
                     alt="Weather illustration"
                 />
             </div>
 
             <div className='flex flex-col w-full gap-7 pb-7'>
                 {/* PAG ULAN */}
-                <TimeGraph rainChance={rainChance} />
+                <TimeGraph 
+                    rainChance={rainChance} 
+                    hourlyForecast={hourlyForecast}
+                    loading={loading}
+                />
 
                 {/* ORAS NG PAG SASAMPAY */}
-                <TimeFrame condition={condition} rainChance={rainChance} />
+                <TimeFrame 
+                    condition={condition} 
+                    rainChance={rainChance} 
+                    loading={loading}
+                />
 
                 {/* DESCRIPTION */}
-                <Description condition={condition} temperature={temperature} rainChance={rainChance} />
+                <Description 
+                    condition={condition} 
+                    temperature={temperature} 
+                    rainChance={rainChance} 
+                    loading={loading}
+                />
             </div>
 
             {/* FOOTER */}
